@@ -1,0 +1,7 @@
+# VS Code config
+.vscode/
+
+#Python env
+venv/
+.venv/
+
