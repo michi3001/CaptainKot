@@ -1,0 +1,26 @@
+version: '3'
+
+services:
+  capnp_server:
+    build: .
+    container_name: capnp_server
+    volumes:
+      - .:/usr/src/app
+    working_dir: /usr/src/app
+    command: python server.py 0.0.0.0:12345
+    environment:
+      - PYTHONUNBUFFERED=1
+    ports:
+      - "12345:12345"  
+
+  capnp_client:
+    build: .
+    container_name: capnp_client
+    depends_on:
+      - capnp_server
+    volumes:
+      - .:/usr/src/app
+    working_dir: /usr/src/app
+    command: python client.py capnp_server:12345 
+    environment:
+      - PYTHONUNBUFFERED=1
