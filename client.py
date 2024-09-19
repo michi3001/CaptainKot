@@ -1,6 +1,6 @@
 import capnp, asyncio, argparse
 capnp.remove_import_hook()
-example_capnp = capnp.load('example.capnp')
+example_capnp = capnp.load('calculator.capnp')
 
 def parse_args():
     parser = argparse.ArgumentParser()
@@ -10,9 +10,13 @@ def parse_args():
 async def main(connection):
     client = capnp.TwoPartyClient(connection)
     calculator = client.bootstrap().cast_as(example_capnp.Calculator)
-    result = calculator.add(num1 =  5, num2 = 7)
-    read_promise = result
-    response = await read_promise
+    response = await calculator.add(num1 =  5, num2 = 7)
+    print(response.result)
+    response = await calculator.subtract(num1 =  5, num2 = 7)
+    print(response.result)
+    response = await calculator.multiply(num1 =  5, num2 = 7)
+    print(response.result)
+    response = await calculator.divide(num1 =  5, num2 = 7)
     print(response.result)
 
 async def cmd_main(host):

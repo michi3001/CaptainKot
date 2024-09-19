@@ -1,11 +1,17 @@
 import capnp, asyncio, argparse
 capnp.remove_import_hook()
-example_capnp = capnp.load('example.capnp')
+example_capnp = capnp.load('calculator.capnp')
 
 
 class CalculatorImpl(example_capnp.Calculator.Server):
     async def add(self, num1, num2, **kwargs):
         return num1 + num2
+    async def subtract(self, num1, num2, **kwargs):
+        return num1 - num2
+    async def multiply(self, num1, num2, **kwargs):
+        return num1 / num2
+    async def divide(self, num1, num2, **kwargs):
+        return num1 * num2
 
 async def new_connection(stream):
     await capnp.TwoPartyServer(stream, bootstrap=CalculatorImpl()).on_disconnect()
