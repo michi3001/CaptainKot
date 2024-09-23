@@ -10,8 +10,8 @@ Um den Compiler zu bauen, stellen Sie sicher, dass Sie die notwendigen Build-Too
 
 1. **Repository klonen (falls noch nicht vorhanden):**
     ```bash
-    git clone <URL des Repositories>
-    cd Kotlin_Compiler
+    git clone https://github.com/michi3001/CaptainKot.git
+    cd KotlinCompiler
     ```
 
 2. **Build-Verzeichnis erstellen:**
@@ -29,7 +29,7 @@ Um den Compiler zu bauen, stellen Sie sicher, dass Sie die notwendigen Build-Too
      ```bash
     cmake --build .
     ```
-    Nach erfolgreichem Bauen wird eine ausführbare Datei (Kotlin_Compiler.exe) im build-Verzeichnis unter dem Debug Order erstellt.
+    Nach erfolgreichem Bauen wird eine ausführbare Datei (KotlinCompiler.exe) im build-Verzeichnis unter dem Debug Order erstellt.
 
 
 ## 2. Compiler ausführen
@@ -37,10 +37,10 @@ Nachdem der Compiler erfolgreich gebaut wurde, kann er genutzt werden, um Cap'n 
 
 ### Schritte zum Bauen des Compilers
     ```bash
-    ./Kotlin_Compiler <Pfad_zur_Schemadatei>
+    ./KotlinCompiler <Pfad_zur_Schemadatei>
     ```
 
     Beispiel:
     ```bash
-    ./Kotlin_Compiler ../schemas/calculator.capnp
+    ./KotlinCompiler ../schemas/calculator.capnp
     ```
