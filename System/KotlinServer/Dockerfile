@@ -1,53 +1,65 @@
 # Stage 1: Build Kotlin Compiler
-FROM alpine:latest AS compilerBuild
+FROM python:3.11-slim AS compilerbuild
 
-# Install necessary tools for building the Kotlin compiler (g++, cmake, git)
-RUN apk add --no-cache g++ cmake make build-base
+# Install the necessary build tools for the Cap'n Proto compiler, including cmake
+RUN apt-get update && \
+    apt-get install -y capnproto autoconf automake libtool curl make g++ unzip cmake && \
+    apt-get clean
 
+# Build the Cap'n Proto schemas
 COPY ./KotlinCompiler/schemas/ /KotlinCompiler/schemas
 COPY ./KotlinCompiler/src/ /KotlinCompiler/src
 COPY ./KotlinCompiler/CMakeLists.txt /KotlinCompiler
 
 WORKDIR /KotlinCompiler
 
-# Build the Cap'n Proto compiler
-RUN mkdir build && cd build && cmake ..
-RUN cd build && cmake --build . --verbose
-
-RUN cd build && find . -type f -exec ls -l {} \;
-
-
-# DEBUG: List the contents of the build directory
-# RUN cd build && ls -l && sleep 99999
-
+RUN mkdir build && cd build && cmake .. && \
+    cmake --build . --verbose
 
 RUN /KotlinCompiler/build/KotlinCompiler ./schemas/calculator.capnp
 
-# DEBUG: List the contents of the build directory
-# RUN cd output && ls -l && sleep 99999
 
+# Stage 2: Build Kotlin Server
+FROM openjdk:17-slim
 
-# Stage 2: Build the Kotlin Server
-FROM openjdk:17-alpine
+# Install Maven and Python 3 along with required packages
+RUN apt-get update && \
+    apt-get install -y maven python3 python3-pip g++ && \
+    apt-get clean
 
-RUN apk add --no-cache maven
+# Install pycapnp
+RUN pip3 install pycapnp
 
 WORKDIR /app
 
+# Copy the Kotlin source files
 COPY ./KotlinServer/project/src ./src
 
-# Copy the generated Kotlin interface file from the compiler build stage
-COPY --from=compilerBuild /KotlinCompiler/output/CalculatorInterface.kt ./src/main/kotlin/org/capnkot/calculator/interfaces/
+# Copy the generated Kotlin interface file from the first stage
+COPY --from=compilerbuild /KotlinCompiler/output/CalculatorInterface.kt ./src/main/kotlin/org/capnkot/calculator/interfaces/
 
 # Add package declaration to the interface file
 RUN sed -i '1s|^|package org.capnkot.calculator.interfaces\n|' ./src/main/kotlin/org/capnkot/calculator/interfaces/CalculatorInterface.kt
 
+# Copy the Maven project file
 COPY ./KotlinServer/project/pom.xml /app/
 
-RUN mvn dependency:go-offline
+# Pre-fetch Maven dependencies
+RUN mvn clean install
 
+# Package the Maven project
 RUN mvn package
 
 EXPOSE 8080
 
+# Copy Python scripts for serialization/deserialization
+COPY ./KotlinServer/project/src/main/resources/deserializer.py ./src/main/resources/deserializer.py
+COPY ./KotlinServer/project/src/main/resources/serializer.py ./srcmain/resources/serializer.py
+COPY ./KotlinCompiler/schemas/ ./
+
+
+# Debug sleep
+# CMD ["sleep", "infinity"]
+
+# Start the Kotlin server
 CMD ["java", "-jar", "target/kotlinServer.jar"]

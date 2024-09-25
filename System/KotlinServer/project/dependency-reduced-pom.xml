@@ -35,7 +35,7 @@
             <configuration>
               <transformers>
                 <transformer>
-                  <mainClass>org.capnkot.calculator.CalculatorImplKt</mainClass>
+                  <mainClass>org.capnkot.calculator.ServerKt</mainClass>
                 </transformer>
               </transformers>
             </configuration>
@@ -50,52 +50,6 @@
       <url>https://repo1.maven.org/maven2/</url>
     </repository>
   </repositories>
-  <dependencies>
-    <dependency>
-      <groupId>org.junit.jupiter</groupId>
-      <artifactId>junit-jupiter</artifactId>
-      <version>5.10.0</version>
-      <scope>test</scope>
-      <exclusions>
-        <exclusion>
-          <artifactId>junit-jupiter-api</artifactId>
-          <groupId>org.junit.jupiter</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>junit-jupiter-params</artifactId>
-          <groupId>org.junit.jupiter</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>junit-jupiter-engine</artifactId>
-          <groupId>org.junit.jupiter</groupId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-    <dependency>
-      <groupId>org.jetbrains.kotlin</groupId>
-      <artifactId>kotlin-test-junit5</artifactId>
-      <version>2.0.20</version>
-      <scope>test</scope>
-      <exclusions>
-        <exclusion>
-          <artifactId>kotlin-test</artifactId>
-          <groupId>org.jetbrains.kotlin</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>junit-platform-launcher</artifactId>
-          <groupId>org.junit.platform</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>junit-jupiter-api</artifactId>
-          <groupId>org.junit.jupiter</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>junit-jupiter-engine</artifactId>
-          <groupId>org.junit.jupiter</groupId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-  </dependencies>
   <properties>
     <kotlin.code.style>official</kotlin.code.style>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
