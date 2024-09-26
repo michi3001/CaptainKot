@@ -22,7 +22,7 @@ class CalculatorImpl : CalculatorInterface {
     }
 
     override fun divide(num1: Double, num2: Double): Double {
-        if (num2 == 0.0) throw ArithmeticException("Division by zero")
+        if (num2 == 0.0) return -1.0      // Return -1 if division by zero: Error case
         return num1 / num2
     }
 }

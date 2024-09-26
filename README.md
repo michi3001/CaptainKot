@@ -21,8 +21,30 @@ Before running the CaptainKot project, ensure you have the following installed o
 git clone https://github.com/yourusername/CaptainKot.git
 cd CaptainKot/System
 ```
+ Ensure you have your Capnproto schema in the folder: [System/KotlinCompiler/schemas](System/KotlinCompiler/schemas/)
 
 ### Run the application
 ```bash
 docker-compose up --build
+```
+
+## Launch the System local without using docker
+
+For trying out the application in Windows without using Docker. You need to:
+* compile the Capnproto Schema Files to Kotlin Glue Code as described [here](/System/KotlinCompiler/README.md). The generated Glue has to copied into [System/KotlinServer/project/src/main/kotlin/org/capnkot/calculator/interfaces](System/KotlinServer/project/src/main/kotlin/org/capnkot/calculator/interfaces/)
+
+* change the following code lines in [CalculatorImpl.kt](System/KotlinServer/project/src/main/kotlin/org/capnkot/calculator/CalculatorImpl.kt):
+``` python
+val deserializeProcess = ProcessBuilder("python3", "./src/main/resources/deserializer.py").start()
+// use this for windows development: val serializeProcess = ProcessBuilder("python", "./src/main/resources/serializer.py").start()
+
+val serializeProcess = ProcessBuilder("python3", "./src/main/resources/serializer.py").start()
+// use this for windows development: val serializeProcess = ProcessBuilder("python", "./src/main/resources/serializer.py").start()
+```
+This has to be done because in the docker container the python code has to be started with 'python3' and under windows with 'python'
+
+* change the following code lines in [client.py](System/PythonClient/client.py)
+``` python
+# socketObject.connect(('localhost', 8080))    localhost for local use
+socketObject.connect(('server', 8080))        # server for docker use
 ```

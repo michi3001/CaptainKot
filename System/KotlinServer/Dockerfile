@@ -18,6 +18,7 @@ RUN mkdir build && cd build && cmake .. && \
 
 RUN /KotlinCompiler/build/KotlinCompiler ./schemas/calculator.capnp
 
+# Debug sleep
 
 # Stage 2: Build Kotlin Server
 FROM openjdk:17-slim
@@ -47,19 +48,13 @@ COPY ./KotlinServer/project/pom.xml /app/
 # Pre-fetch Maven dependencies
 RUN mvn clean install
 
-# Package the Maven project
-RUN mvn package
 
 EXPOSE 8080
 
 # Copy Python scripts for serialization/deserialization
-COPY ./KotlinServer/project/src/main/resources/deserializer.py ./src/main/resources/deserializer.py
-COPY ./KotlinServer/project/src/main/resources/serializer.py ./srcmain/resources/serializer.py
 COPY ./KotlinCompiler/schemas/ ./
 
 
-# Debug sleep
-# CMD ["sleep", "infinity"]
 
 # Start the Kotlin server
 CMD ["java", "-jar", "target/kotlinServer.jar"]

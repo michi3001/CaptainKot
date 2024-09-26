@@ -12,6 +12,5 @@ services:
       dockerfile: ./PythonClient/Dockerfile
     ports:
       - "5000:5000"
-    command: python client.py
     depends_on:
       - server

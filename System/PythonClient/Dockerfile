@@ -8,8 +8,8 @@ RUN apt-get update && \
 
 RUN pip install pycapnp
 
-COPY ./PythonClient/requirements.txt .
-RUN pip install -r requirements.txt
+# COPY ./PythonClient/requirements.txt .
+# RUN pip install -r requirements.txt
 
 COPY ./KotlinCompiler/schemas/ ./
 
