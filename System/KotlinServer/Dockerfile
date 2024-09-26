@@ -49,7 +49,7 @@ COPY ./KotlinServer/project/pom.xml /app/
 RUN mvn clean install
 
 
-EXPOSE 8080
+EXPOSE 5000
 
 # Copy Python scripts for serialization/deserialization
 COPY ./KotlinCompiler/schemas/ ./

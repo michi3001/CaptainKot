@@ -107,8 +107,8 @@ fun handleClient(clientSocket: Socket) {
 }
 
 fun main() {
-    val serverSocket = ServerSocket(8080)
-    println("Server started under localhost:8080")
+    val serverSocket = ServerSocket(5000)
+    println("Server started under localhost:5000")
 
     while (true) {
         val clientSocket = serverSocket.accept()

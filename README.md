@@ -45,6 +45,15 @@ This has to be done because in the docker container the python code has to be st
 
 * change the following code lines in [client.py](System/PythonClient/client.py)
 ``` python
-# socketObject.connect(('localhost', 8080))    localhost for local use
-socketObject.connect(('server', 8080))        # server for docker use
+# socketObject.connect(('localhost', 5000))    localhost for local use
+socketObject.connect(('server', 5000))        # server for docker use
 ```
+
+## Access the Application
+ 
+1. **Open the Swagger UI**:
+   - Navigate to `http://localhost/docs` in your web browser to access the interactive API documentation.
+
+2. **Use the API**:
+   - In Swagger UI, expand the available operations: add, subtract, multiply, and divide.
+   - Enter your numbers (num1 and num2) and click Execute to see the results.
