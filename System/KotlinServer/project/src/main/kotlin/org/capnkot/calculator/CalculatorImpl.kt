@@ -105,14 +105,3 @@ fun handleClient(clientSocket: Socket) {
         clientSocket.close()
     }
 }
-
-fun main() {
-    val serverSocket = ServerSocket(5000)
-    println("Server started under localhost:5000")
-
-    while (true) {
-        val clientSocket = serverSocket.accept()
-        println("Client connected")
-        Thread { handleClient(clientSocket) }.start()
-    }
-}
