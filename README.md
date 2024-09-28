@@ -50,10 +50,25 @@ socketObject.connect(('server', 5000))        # server for docker use
 ```
 
 ## Access the Application
+This application provides several mathematical operations (addition, subtraction, multiplication, and division) via an API. Below are instructions on how to access and use the API endpoints.
  
 1. **Open the Swagger UI**:
-   - Navigate to `http://localhost/docs` in your web browser to access the interactive API documentation.
-
-2. **Use the API**:
+   - Open your web browser and navigate to http://localhost/docs. This will open the Swagger UI, an interactive tool for exploring  and testing the API.
    - In Swagger UI, expand the available operations: add, subtract, multiply, and divide.
    - Enter your numbers (num1 and num2) and click Execute to see the results.
+
+
+2. **Directly Access Routes in the Browser**:
+
+   Alternatively, you can access the API routes directly via your browser by using the following URL structure:
+   
+   ### Addition:
+   - http://localhost/add?num1=5&num2=3
+   ### Subtraction:
+   - http://localhost/subtract?num1=5&num2=3
+   ### Multiplication:
+   - http://localhost/multiply?num1=5&num2=3
+   ### Division:
+   - http://localhost/divide?num1=5&num2=3
+
+Simply replace `num1` and `num2` with your desired numbers. These endpoints will perform the respective operations and return the result.
