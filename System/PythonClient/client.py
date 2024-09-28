@@ -1,8 +1,32 @@
 import socket
 import capnp
 
+from fastapi import FastAPI, HTTPException
+
 capnp.remove_import_hook()
 capnpCalculatorSchema = capnp.load('calculator.capnp')
+
+app = FastAPI()
+
+# Definition of the routes for the different operations 
+@app.get("/add")
+def add(num1: float, num2: float):
+    return sendRequest("add", num1, num2)
+
+@app.get("/subtract")
+def subtract(num1: float, num2: float):
+    return sendRequest("subtract", num1, num2)
+
+@app.get("/multiply")
+def multiply(num1: float, num2: float):
+    return sendRequest("multiply", num1, num2)
+
+@app.get("/divide")
+def divide(num1: float, num2: float):
+    if num2 == 0:
+        raise HTTPException(status_code=400, detail="Division by zero is not allowed")
+    return sendRequest("divide", num1, num2)
+
 
 
 def recv_all(sock, length):     # function to receive all bytes from the socket correctly
@@ -10,7 +34,7 @@ def recv_all(sock, length):     # function to receive all bytes from the socket 
     while len(data) < length:
         part = sock.recv(length - len(data))
         if not part:
-            raise ConnectionError("Socket closed prematurely")
+            raise HTTPException(status_code=500, detail="Socket closed prematurely")
         data.extend(part)
     return data
 
@@ -23,8 +47,8 @@ def sendRequest(operation, num1, num2):                     # function to send t
 
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as socketObject:
         socketObject.settimeout(5)
-        # socketObject.connect(('localhost', 8080))    localhost for local use
-        socketObject.connect(('server', 8080))        # server for docker use
+        # socketObject.connect(('localhost', 5000))    localhost for local use
+        socketObject.connect(('server', 5000))        # server for docker use
 
         # Send the request to the server
         socketObject.sendall(len(requestBytes).to_bytes(4, byteorder='big'))
@@ -33,47 +57,27 @@ def sendRequest(operation, num1, num2):                     # function to send t
         try:        # get the answer from the server
             responseLengthBytes = recv_all(socketObject, 4)
         except socket.timeout:
-            print("Error: Did not receive response length within timeout")
-            return
+            raise HTTPException(status_code=500, detail="Did not receive response length within timeout")
 
         if len(responseLengthBytes) < 4:
-            print("Error: Did not receive complete response length")
-            return
-
+            raise HTTPException(status_code=500, detail="Did not receive complete response length")
         responseLength = int.from_bytes(responseLengthBytes, byteorder='big')
 
         if responseLength <= 0:
-            print("Error: Received invalid response length")
-            return
-
+            raise HTTPException(status_code=500, detail="Received invalid response length")
+            
         try:
             responseBytes = recv_all(socketObject, responseLength)
         except socket.timeout:
-            print(f"Error: Timeout while receiving response (expected {responseLength} bytes)")
-            return
+            raise HTTPException(status_code=500, detail=f"Timeout while receiving response (expected {responseLength} bytes)")
 
         if len(responseBytes) != responseLength:
-            print(f"Error: Expected {responseLength} bytes but received {len(responseBytes)} bytes")
-            return
+            raise HTTPException(status_code=500, detail=f"Expected {responseLength} bytes but received {len(responseBytes)} bytes")
 
         try:
             with capnpCalculatorSchema.Response.from_bytes(responseBytes) as response:      # decode the response of the server with capnp
-                print("The Response of the calculation is:", response.result)
+                return {"result": response.result}
 
         except Exception as e:
-            print(f"Error decoding response: {e}")
+            raise HTTPException(status_code=500, detail=f"Error decoding server response: {e}")
 
-def main():
-    operations = [
-        ("add", 5.0, 7.0),
-        ("subtract", 5.0, 7.0),
-        ("multiply", 5.0, 7.0),
-        ("divide", 5.0, 7.0)
-    ]
-
-    for operation, num1, num2 in operations:
-        print(f"\nSending {operation} request with num1={num1}, num2={num2}")
-        sendRequest(operation, num1, num2)
-
-if __name__ == "__main__":
-    main()
