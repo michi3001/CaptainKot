@@ -9,8 +9,8 @@ Interface parseCapnpFile(const string &filename) {
     Interface parsedInterface;
     ifstream file(filename);
     string line;
-    regex interfaceRegex(R"(interface\s+(\w+))");
-    regex methodRegex(R"((\w+)\s+@\d+\s*\(([^)]*)\)\s*->\s*\(([^)]*)\))");
+    regex interfaceRegex(R"(interface\s+(\w+))"); // RegEx to detect the interface name
+    regex methodRegex(R"((\w+)\s+@\d+\s*\(([^)]*)\)\s*->\s*\(([^)]*)\))"); //RegEx to detect interface methods, parameters and return type
     smatch match;
 
     if (!file.is_open()) {
